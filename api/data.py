@@ -1,4 +1,4 @@
-import json, os
+import json, os, traceback
 import jwt
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
@@ -144,4 +144,6 @@ class handler(BaseHTTPRequestHandler):
         except (PermissionError, jwt.ExpiredSignatureError) as e:
             self._send(error_response(str(e), 401))
         except Exception as e:
-            self._send(error_response(str(e), 500))
+            # Retorna o traceback completo como resposta para debug
+            tb = traceback.format_exc()
+            self._send(error_response(f"ERRO: {str(e)} | TRACEBACK: {tb}", 500))
